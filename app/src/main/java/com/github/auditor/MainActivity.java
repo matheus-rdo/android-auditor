@@ -3,6 +3,8 @@ package com.github.auditor;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,12 +12,13 @@ import com.github.auditor.models.ItemAuditoria;
 import com.github.auditor.models.Ocorrencia;
 import com.github.auditor.service.AuditoriaService;
 import com.github.auditor.ui.adapter.ItemAuditoriaAdapter;
+import com.github.auditor.ui.adapter.viewmodel.AuditoriaViewModel;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AuditoriaService auditoriaService;
+    private AuditoriaViewModel model;
 
     private RecyclerView itensAuditoriaRecyclerView;
 
@@ -26,11 +29,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.auditoriaService = new AuditoriaService();
+        this.model = ViewModelProviders.of(this).get(AuditoriaViewModel.class);
         this.itensAuditoriaRecyclerView = findViewById(R.id.itensAuditoriaRecyclerView);
 
-        List<Ocorrencia> ocorrencias = auditoriaService.getOcorrencias();
-        List<ItemAuditoria> auditorias = auditoriaService.getItensAuditoria();
+        List<Ocorrencia> ocorrencias = model.getOcorrencias().getValue();
+        List<ItemAuditoria> auditorias = model.getItensAuditoria().getValue();
 
         this.itensAuditoriaAdapter = new ItemAuditoriaAdapter(auditorias, ocorrencias);
         itensAuditoriaRecyclerView.setAdapter(itensAuditoriaAdapter);

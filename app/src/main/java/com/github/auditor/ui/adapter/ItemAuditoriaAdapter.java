@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,19 +39,26 @@ public class ItemAuditoriaAdapter extends RecyclerView.Adapter<ItemAuditoriaView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemAuditoriaViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ItemAuditoriaViewHolder holder, int position) {
         ItemAuditoria item = itensAuditoria.get(position);
         CharSequence data = new DateFormat().format("dd/MM/yyyy", item.getData());
         holder.data.setText(data);
         holder.descricao.setText(item.getDescricao());
 
-        ArrayAdapter adapter = new ArrayAdapter(holder.itemView.getContext(), android.R.layout.simple_spinner_item, ocorrencias);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = new GenericArrayAdapter<Ocorrencia>(holder.itemView.getContext(), ocorrencias) {
+
+
+            @Override
+            public String getItemLabel(Ocorrencia item) {
+                return item.getOcorrencia();
+            }
+        };
         holder.ocorrencia.setAdapter(adapter);
         holder.ocorrencia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Ocorrencia ocorrencia = ocorrencias.get(position);
+                int pos = holder.getAdapterPosition();
                 Log.i("adapter", ocorrencia.toString());
             }
 
@@ -59,6 +67,7 @@ public class ItemAuditoriaAdapter extends RecyclerView.Adapter<ItemAuditoriaView
                 Log.i("adapter", "Nothing");
             }
         });
+
     }
 
     @Override
