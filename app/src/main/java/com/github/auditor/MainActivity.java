@@ -3,14 +3,12 @@ package com.github.auditor;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.auditor.models.ItemAuditoria;
 import com.github.auditor.models.Ocorrencia;
-import com.github.auditor.service.AuditoriaService;
 import com.github.auditor.ui.adapter.ItemAuditoriaAdapter;
 import com.github.auditor.ui.adapter.viewmodel.AuditoriaViewModel;
 
@@ -35,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
         List<Ocorrencia> ocorrencias = model.getOcorrencias().getValue();
         List<ItemAuditoria> auditorias = model.getItensAuditoria().getValue();
 
-        this.itensAuditoriaAdapter = new ItemAuditoriaAdapter(auditorias, ocorrencias);
+        this.itensAuditoriaAdapter = new ItemAuditoriaAdapter(auditorias, ocorrencias, (auditoriaIndex, ocorrencia) -> {
+            ItemAuditoria item = auditorias.get(auditoriaIndex);
+            item.setOcorrencia(ocorrencia);
+        });
         itensAuditoriaRecyclerView.setAdapter(itensAuditoriaAdapter);
 
         // Configurando um dividr entre linhas, para uma melhor visualização.

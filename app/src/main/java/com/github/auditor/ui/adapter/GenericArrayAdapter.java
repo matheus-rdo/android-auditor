@@ -12,27 +12,24 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public abstract class GenericArrayAdapter<T> extends ArrayAdapter<String> {
+public class GenericArrayAdapter<T> extends ArrayAdapter<String> {
 
     private static final int DEFAULT_HEIGHT = 96;
 
     private static final int DEFAULT_RESOURCE = android.R.layout.simple_spinner_item;
 
-    public GenericArrayAdapter(@NonNull Context context, @NonNull List<T> objects) {
+    public GenericArrayAdapter(@NonNull Context context, @NonNull List<T> objects, PresentationParser<T> presentationParser) {
         super(context, DEFAULT_RESOURCE);
         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        fillOptions(objects);
+        fillOptions(objects, presentationParser);
     }
 
-    private void fillOptions(List<T> objects) {
+    private void fillOptions(List<T> objects, PresentationParser<T> presentationParser) {
         add("Selecione");
         for (T obj : objects) {
-            add(getItemLabel(obj));
+            add(presentationParser.toPresentation(obj));
         }
     }
-
-
-    public abstract String getItemLabel(T item);
 
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -45,5 +42,17 @@ public abstract class GenericArrayAdapter<T> extends ArrayAdapter<String> {
         }
         view.setLayoutParams(layoutParams);
         return view;
+    }
+
+    public interface PresentationParser<T> {
+
+        String toPresentation(T item);
+
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

@@ -3,6 +3,7 @@ package com.github.auditor.models;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Ocorrencia implements Serializable {
 
@@ -61,9 +62,25 @@ public class Ocorrencia implements Serializable {
         OK, NOK;
     }
 
-    @NonNull
     @Override
     public String toString() {
-        return ocorrencia;
+        return "Ocorrencia{" +
+                "codigo='" + codigo + '\'' +
+                ", ocorrencia='" + ocorrencia + '\'' +
+                ", tipo=" + tipo +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ocorrencia that = (Ocorrencia) o;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 }

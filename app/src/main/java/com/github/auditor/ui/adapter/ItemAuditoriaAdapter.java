@@ -24,10 +24,13 @@ public class ItemAuditoriaAdapter extends RecyclerView.Adapter<ItemAuditoriaView
 
     private final List<Ocorrencia> ocorrencias;
 
+    private final OcorrenciaSelectedListener listener;
 
-    public ItemAuditoriaAdapter(List<ItemAuditoria> itensAuditoria, List<Ocorrencia> ocorrencias) {
+
+    public ItemAuditoriaAdapter(List<ItemAuditoria> itensAuditoria, List<Ocorrencia> ocorrencias, OcorrenciaSelectedListener listener) {
         this.itensAuditoria = itensAuditoria;
         this.ocorrencias = ocorrencias;
+        this.listener = listener;
     }
 
     @NonNull
@@ -44,22 +47,23 @@ public class ItemAuditoriaAdapter extends RecyclerView.Adapter<ItemAuditoriaView
         holder.data.setText(data);
         holder.descricao.setText(item.getDescricao());
 
-        ArrayAdapter adapter = new GenericArrayAdapter<Ocorrencia>(holder.itemView.getContext(), ocorrencias) {
-
-
-            @Override
-            public String getItemLabel(Ocorrencia item) {
-                return item.getOcorrencia();
-            }
-        };
+        // CONFIG ADAPTER
+        ArrayAdapter adapter = new GenericArrayAdapter<Ocorrencia>(holder.itemView.getContext(), ocorrencias, audit -> audit.getOcorrencia());
         holder.ocorrencia.setAdapter(adapter);
+
+        // MARCANDO SELECIONADOS
+        if (item.getOcorrencia() != null) {
+            int index = ocorrencias.indexOf(item.getOcorrencia());
+            holder.ocorrencia.setSelection(index + 1, false);
+        }
+
         holder.ocorrencia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
                     Ocorrencia ocorrencia = ocorrencias.get(position - 1);
                     int pos = holder.getAdapterPosition();
-                    Log.i("adapter", ocorrencia.toString());
+                    listener.onOcorrenciaSelected(pos, ocorrencia);
                 }
             }
 
@@ -68,6 +72,12 @@ public class ItemAuditoriaAdapter extends RecyclerView.Adapter<ItemAuditoriaView
                 Log.i("adapter", "Nothing");
             }
         });
+    }
+
+
+    public interface OcorrenciaSelectedListener {
+
+        void onOcorrenciaSelected(int auditoriaIndex, Ocorrencia ocorrencia);
 
     }
 
