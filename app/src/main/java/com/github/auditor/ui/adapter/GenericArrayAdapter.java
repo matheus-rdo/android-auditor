@@ -12,33 +12,38 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-public abstract class GenericArrayAdapter<T> extends ArrayAdapter<T> {
+public abstract class GenericArrayAdapter<T> extends ArrayAdapter<String> {
 
-    private LayoutInflater mInflater;
+    private static final int DEFAULT_HEIGHT = 96;
 
     private static final int DEFAULT_RESOURCE = android.R.layout.simple_spinner_item;
 
     public GenericArrayAdapter(@NonNull Context context, @NonNull List<T> objects) {
-        super(context, DEFAULT_RESOURCE, objects);
-        this.mInflater = LayoutInflater.from(context);
+        super(context, DEFAULT_RESOURCE);
         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fillOptions(objects);
     }
+
+    private void fillOptions(List<T> objects) {
+        add("Selecione");
+        for (T obj : objects) {
+            add(getItemLabel(obj));
+        }
+    }
+
 
     public abstract String getItemLabel(T item);
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        final TextView textView;
-
-        if (convertView == null) {
-            textView = (TextView) mInflater.inflate(DEFAULT_RESOURCE, parent, false);
+    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        TextView view = (TextView) super.getDropDownView(position, convertView, parent);
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        if (position == 0) {
+            layoutParams.height = 1;
         } else {
-            textView = (TextView) convertView;
+            layoutParams.height = DEFAULT_HEIGHT;
         }
-
-        textView.setText(getItemLabel(getItem(position)));
-
-        return textView;
+        view.setLayoutParams(layoutParams);
+        return view;
     }
 }

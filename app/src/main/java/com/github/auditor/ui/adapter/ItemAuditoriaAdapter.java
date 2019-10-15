@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,9 +56,11 @@ public class ItemAuditoriaAdapter extends RecyclerView.Adapter<ItemAuditoriaView
         holder.ocorrencia.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Ocorrencia ocorrencia = ocorrencias.get(position);
-                int pos = holder.getAdapterPosition();
-                Log.i("adapter", ocorrencia.toString());
+                if (position > 0) {
+                    Ocorrencia ocorrencia = ocorrencias.get(position - 1);
+                    int pos = holder.getAdapterPosition();
+                    Log.i("adapter", ocorrencia.toString());
+                }
             }
 
             @Override
